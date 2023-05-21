@@ -1,9 +1,14 @@
 import { PrismaClient } from '@prisma/client';
-import { hash } from 'bcrypt';
-import { ConflictException, Injectable } from '@nestjs/common';
+import { compare, hash } from 'bcrypt';
+import {
+  ConflictException,
+  ForbiddenException,
+  Injectable,
+} from '@nestjs/common';
 import { CreateUserReqDto } from './dto/create-user-req.dto';
 import { CreateUserResDto } from './dto/create-user.res.dto';
 import { UpdateUserReqDto, UpdateUserResDto } from './dto/update-user-req.dto';
+import { UpdateUserPasswordReqDto } from './dto/update-user-password.dto';
 
 const prisma = new PrismaClient();
 
@@ -44,5 +49,26 @@ export class UsersService {
     });
 
     return new UpdateUserResDto(userUpdated);
+  }
+
+  async updatePassword(
+    userId: string,
+    dataUpdatePassword: UpdateUserPasswordReqDto,
+  ) {
+    const user = await prisma.user.findUnique({ where: { id: userId } });
+
+    const isMatchPassword = await compare(
+      dataUpdatePassword.currentPassword,
+      user.password,
+    );
+    if (!isMatchPassword) {
+      throw new ForbiddenException('Password invalid');
+    }
+
+    const hashPassword = await hash(dataUpdatePassword.password, 10);
+    await prisma.user.update({
+      where: { id: userId },
+      data: { password: hashPassword },
+    });
   }
 }
