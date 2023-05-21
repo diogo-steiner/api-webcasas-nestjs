@@ -1,7 +1,11 @@
 import { PrismaClient } from '@prisma/client';
 import { compare } from 'bcrypt';
 import * as jwt from 'jsonwebtoken';
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { CreateSessionReqDto } from './dto/create-session-req.dto';
 import { CreateSessionResDto } from './dto/create-session-res.dto';
 
@@ -22,6 +26,16 @@ export class SessionsService {
 
     if (!matchPassword) {
       throw new UnauthorizedException('Email or password invalid');
+    }
+
+    if (!user.isActive) {
+      throw new ForbiddenException({
+        message: 'User account disabled',
+        user: {
+          id: user.id,
+          isActive: user.isActive,
+        },
+      });
     }
 
     const token = jwt.sign({}, process.env.SECRET_KEY, {
