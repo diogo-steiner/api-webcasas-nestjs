@@ -8,7 +8,7 @@ import { UsersController } from 'src/users/users.controller';
 import { UsersService } from 'src/users/users.service';
 import { SessionsController } from './sessions/sessions.controller';
 import { SessionsService } from './sessions/sessions.service';
-import { ensureAuthMiddleware } from './users/middlewares/ensureAuth.middleware';
+import { ensureAuthMiddleware } from './sessions/middlewares/ensureAuth.middleware';
 
 @Module({
   imports: [],
