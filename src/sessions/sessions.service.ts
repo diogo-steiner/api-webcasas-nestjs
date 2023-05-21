@@ -8,6 +8,7 @@ import {
 } from '@nestjs/common';
 import { CreateSessionReqDto } from './dto/create-session-req.dto';
 import { CreateSessionResDto } from './dto/create-session-res.dto';
+import { CreateSessionResUserDto } from './dto/create-session-res.dto';
 
 const prisma = new PrismaClient();
 
@@ -44,5 +45,20 @@ export class SessionsService {
     });
 
     return new CreateSessionResDto({ token, user });
+  }
+
+  async get(userId: string) {
+    const user = await prisma.user.findUnique({ where: { id: userId } });
+
+    if (!user.isActive) {
+      throw new ForbiddenException({
+        message: 'User account disabled',
+        user: {
+          id: user.id,
+          isActive: user.isActive,
+        },
+      });
+    }
+    return new CreateSessionResUserDto(user);
   }
 }
