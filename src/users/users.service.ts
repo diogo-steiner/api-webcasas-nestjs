@@ -71,4 +71,12 @@ export class UsersService {
       data: { password: hashPassword },
     });
   }
+
+  async deactivateAccount(userId: string) {
+    await prisma.user.update({
+      where: { id: userId },
+      data: { isActive: false },
+    });
+    return { message: 'User account deativate sucess' };
+  }
 }

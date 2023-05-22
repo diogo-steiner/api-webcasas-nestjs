@@ -1,4 +1,12 @@
-import { Body, Controller, HttpCode, Patch, Post, Req } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  HttpCode,
+  Param,
+  Patch,
+  Post,
+  Req,
+} from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserReqDto } from './dto/create-user-req.dto';
 import { UpdateUserReqDto } from './dto/update-user-req.dto';
@@ -29,5 +37,10 @@ export class UsersController {
       req.user.id,
       dataUpdatePassword,
     );
+  }
+
+  @Patch('/deactivate/')
+  async deactivateAccount(@Req() req: Request) {
+    return await this.usersService.deactivateAccount(req.user.id);
   }
 }
