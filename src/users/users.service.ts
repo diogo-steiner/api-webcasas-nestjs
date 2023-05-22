@@ -1,6 +1,7 @@
 import { PrismaClient } from '@prisma/client';
 import { compare, hash } from 'bcrypt';
 import {
+  BadRequestException,
   ConflictException,
   ForbiddenException,
   Injectable,
@@ -48,6 +49,19 @@ export class UsersService {
     const userUpdated = await prisma.user.update({
       where: { id: userId },
       data: { ...dataUpdate },
+    });
+
+    return new UpdateUserResDto(userUpdated);
+  }
+
+  async updateAvatar(file: Express.Multer.File, userId: string) {
+    if (!file) {
+      throw new BadRequestException('avatar file is required');
+    }
+
+    const userUpdated = await prisma.user.update({
+      where: { id: userId },
+      data: { avatarUrl: file.path },
     });
 
     return new UpdateUserResDto(userUpdated);

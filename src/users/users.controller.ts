@@ -7,6 +7,9 @@ import {
   Patch,
   Post,
   Req,
+  UnsupportedMediaTypeException,
+  UploadedFile,
+  UseInterceptors,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserReqDto } from './dto/create-user-req.dto';
@@ -14,6 +17,15 @@ import { UpdateUserReqDto } from './dto/update-user-req.dto';
 import { Request } from 'express';
 import { UpdateUserPasswordReqDto } from './dto/update-user-password.dto';
 import { DeleteUserReqDto } from './dto/detele-user.req.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { cloudinaryStorage } from 'src/cloudinary';
+import { multerOptions } from 'src/multer';
+
+// const multerStorageLocal = multer.diskStorage({
+//   destination(req, file, callback) {
+//     return callback(null, './temp');
+//   },
+// });
 
 @Controller('/users')
 export class UsersController {
@@ -27,6 +39,15 @@ export class UsersController {
   @Patch()
   async update(@Req() req: Request, @Body() dataUpdate: UpdateUserReqDto) {
     return await this.usersService.update(req.user.id, dataUpdate);
+  }
+
+  @Patch('/avatar')
+  @UseInterceptors(FileInterceptor('avatar', multerOptions))
+  async updateAvatar(
+    @UploadedFile() file: Express.Multer.File,
+    @Req() req: Request,
+  ) {
+    return this.usersService.updateAvatar(file, req.user.id);
   }
 
   @Patch('/password')
