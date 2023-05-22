@@ -10,6 +10,7 @@ import { CreateUserReqDto } from './dto/create-user-req.dto';
 import { CreateUserResDto } from './dto/create-user.res.dto';
 import { UpdateUserReqDto, UpdateUserResDto } from './dto/update-user-req.dto';
 import { UpdateUserPasswordReqDto } from './dto/update-user-password.dto';
+import { DeleteUserReqDto } from './dto/detele-user.req.dto';
 
 const prisma = new PrismaClient();
 
@@ -94,5 +95,22 @@ export class UsersService {
     });
 
     return { message: 'User account activate sucess' };
+  }
+
+  async deleteAccount(userId: string, dataDeleteUser: DeleteUserReqDto) {
+    const user = await prisma.user.findUnique({ where: { id: userId } });
+
+    const isMatchPassword = await compare(
+      dataDeleteUser.password,
+      user.password,
+    );
+
+    if (!isMatchPassword) {
+      throw new ForbiddenException('Password invalid');
+    }
+
+    await prisma.user.delete({ where: { id: userId } });
+
+    return {};
   }
 }
