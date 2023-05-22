@@ -4,11 +4,13 @@ import {
   ConflictException,
   ForbiddenException,
   Injectable,
+  NotFoundException,
 } from '@nestjs/common';
 import { CreateUserReqDto } from './dto/create-user-req.dto';
 import { CreateUserResDto } from './dto/create-user.res.dto';
 import { UpdateUserReqDto, UpdateUserResDto } from './dto/update-user-req.dto';
 import { UpdateUserPasswordReqDto } from './dto/update-user-password.dto';
+import { DeleteUserReqDto } from './dto/detele-user.req.dto';
 
 const prisma = new PrismaClient();
 
@@ -70,5 +72,45 @@ export class UsersService {
       where: { id: userId },
       data: { password: hashPassword },
     });
+  }
+
+  async deactivateAccount(userId: string) {
+    await prisma.user.update({
+      where: { id: userId },
+      data: { isActive: false },
+    });
+    return { message: 'User account deativate sucess' };
+  }
+
+  async activateAccount(userId: string) {
+    const user = await prisma.user.findUnique({ where: { id: userId } });
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    await prisma.user.update({
+      where: { id: userId },
+      data: { isActive: true },
+    });
+
+    return { message: 'User account activate sucess' };
+  }
+
+  async deleteAccount(userId: string, dataDeleteUser: DeleteUserReqDto) {
+    const user = await prisma.user.findUnique({ where: { id: userId } });
+
+    const isMatchPassword = await compare(
+      dataDeleteUser.password,
+      user.password,
+    );
+
+    if (!isMatchPassword) {
+      throw new ForbiddenException('Password invalid');
+    }
+
+    await prisma.user.delete({ where: { id: userId } });
+
+    return {};
   }
 }
