@@ -9,11 +9,13 @@ import { UsersService } from 'src/users/users.service';
 import { SessionsController } from './sessions/sessions.controller';
 import { SessionsService } from './sessions/sessions.service';
 import { ensureAuthMiddleware } from './sessions/middlewares/ensureAuth.middleware';
+import { PropertiesController } from './properties/properties.controller';
+import { PropertiesService } from './properties/properties.service';
 
 @Module({
   imports: [],
-  controllers: [UsersController, SessionsController],
-  providers: [UsersService, SessionsService],
+  controllers: [UsersController, SessionsController, PropertiesController],
+  providers: [UsersService, SessionsService, PropertiesService],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
@@ -22,10 +24,12 @@ export class AppModule implements NestModule {
       .exclude(
         { path: 'users', method: RequestMethod.POST },
         { path: 'users/activate/:userId', method: RequestMethod.PATCH },
+        { path: 'properties', method: RequestMethod.GET },
       )
       .forRoutes(
         { path: 'sessions', method: RequestMethod.GET },
         UsersController,
+        PropertiesController,
       );
   }
 }
