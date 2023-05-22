@@ -19,7 +19,10 @@ export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer
       .apply(ensureAuthMiddleware)
-      .exclude({ path: 'users', method: RequestMethod.POST })
+      .exclude(
+        { path: 'users', method: RequestMethod.POST },
+        { path: 'users/activate/:userId', method: RequestMethod.PATCH },
+      )
       .forRoutes(
         { path: 'sessions', method: RequestMethod.GET },
         UsersController,

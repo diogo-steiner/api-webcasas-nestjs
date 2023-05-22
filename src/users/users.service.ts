@@ -4,6 +4,7 @@ import {
   ConflictException,
   ForbiddenException,
   Injectable,
+  NotFoundException,
 } from '@nestjs/common';
 import { CreateUserReqDto } from './dto/create-user-req.dto';
 import { CreateUserResDto } from './dto/create-user.res.dto';
@@ -78,5 +79,20 @@ export class UsersService {
       data: { isActive: false },
     });
     return { message: 'User account deativate sucess' };
+  }
+
+  async activateAccount(userId: string) {
+    const user = await prisma.user.findUnique({ where: { id: userId } });
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    await prisma.user.update({
+      where: { id: userId },
+      data: { isActive: true },
+    });
+
+    return { message: 'User account activate sucess' };
   }
 }

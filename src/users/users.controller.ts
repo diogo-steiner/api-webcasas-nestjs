@@ -43,4 +43,9 @@ export class UsersController {
   async deactivateAccount(@Req() req: Request) {
     return await this.usersService.deactivateAccount(req.user.id);
   }
+
+  @Patch('/activate/:userId')
+  async activateAccount(@Param('userId') userId: string) {
+    return await this.usersService.activateAccount(userId);
+  }
 }
