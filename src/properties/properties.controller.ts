@@ -2,7 +2,9 @@ import {
   Body,
   ClassSerializerInterceptor,
   Controller,
+  HttpCode,
   Param,
+  Patch,
   Post,
   Req,
   UploadedFiles,
@@ -31,5 +33,14 @@ export class PropertiesController {
     @Param('propertyId') propertyId: string,
   ) {
     return this.propertiesService.uploadPhotos(files, propertyId);
+  }
+
+  @Patch('/deactivate/:propertyId')
+  @HttpCode(204)
+  async deactivateProperty(
+    @Param('propertyId') propertyId: string,
+    @Req() req: Request,
+  ) {
+    return this.propertiesService.deactivateProperty(propertyId, req.user.id);
   }
 }

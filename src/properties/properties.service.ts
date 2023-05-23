@@ -53,4 +53,21 @@ export class PropertiesService {
 
     return { count: files.length };
   }
+
+  async deactivateProperty(propertyId: string, ownerId: string) {
+    const property = await prisma.property.findFirst({
+      where: { id: propertyId, isActive: true, ownerId: ownerId },
+    });
+
+    if (!property) {
+      throw new NotFoundException('Property not found');
+    }
+
+    await prisma.property.update({
+      where: { id: propertyId },
+      data: { isActive: false },
+    });
+
+    return {};
+  }
 }
