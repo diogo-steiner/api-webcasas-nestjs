@@ -114,6 +114,12 @@ export class PropertiesService {
       throw new NotFoundException('Property not found');
     }
 
+    const viewsCounterUpdated = property.viewsCounter + 1;
+    await prisma.property.update({
+      where: { id: propertyId },
+      data: { viewsCounter: viewsCounterUpdated },
+    });
+
     return plainToInstance(PropertyEntity, property);
   }
 
