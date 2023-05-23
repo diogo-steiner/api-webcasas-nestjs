@@ -56,7 +56,7 @@ export class PropertiesService {
 
   async deactivateProperty(propertyId: string, ownerId: string) {
     const property = await prisma.property.findFirst({
-      where: { id: propertyId, isActive: true, ownerId: ownerId },
+      where: { id: propertyId, isActive: true, ownerId },
     });
 
     if (!property) {
@@ -66,6 +66,23 @@ export class PropertiesService {
     await prisma.property.update({
       where: { id: propertyId },
       data: { isActive: false },
+    });
+
+    return {};
+  }
+
+  async activateProperty(propertyId: string, ownerId: string) {
+    const property = await prisma.property.findFirst({
+      where: { id: propertyId, isActive: false, ownerId },
+    });
+
+    if (!property) {
+      throw new NotFoundException('Property not found');
+    }
+
+    await prisma.property.update({
+      where: { id: propertyId },
+      data: { isActive: true },
     });
 
     return {};

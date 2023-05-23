@@ -43,4 +43,13 @@ export class PropertiesController {
   ) {
     return this.propertiesService.deactivateProperty(propertyId, req.user.id);
   }
+
+  @Patch('/activate/:propertyId')
+  @HttpCode(204)
+  async activateProperty(
+    @Param('propertyId') propertyId: string,
+    @Req() req: Request,
+  ) {
+    return this.propertiesService.activateProperty(propertyId, req.user.id);
+  }
 }
