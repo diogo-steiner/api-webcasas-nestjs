@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Delete,
+  Get,
   HttpCode,
   Param,
   Patch,
@@ -79,5 +80,10 @@ export class UsersController {
     @Body() dataDeleteUser: DeleteUserReqDto,
   ) {
     return await this.usersService.deleteAccount(req.user.id, dataDeleteUser);
+  }
+
+  @Get('/properties')
+  async getProperties(@Req() req: Request) {
+    return this.usersService.getProperties(req.user.id);
   }
 }

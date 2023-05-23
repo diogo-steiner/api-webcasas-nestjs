@@ -132,4 +132,14 @@ export class PropertiesService {
 
     return plainToInstance(PropertyEntity, properties);
   }
+
+  async getAllInHight() {
+    const properties = await prisma.property.findMany({
+      where: { isActive: true },
+      include: { PropertyPhotos: true },
+      orderBy: { viewsCounter: 'desc' },
+    });
+
+    return plainToInstance(PropertyEntity, properties);
+  }
 }

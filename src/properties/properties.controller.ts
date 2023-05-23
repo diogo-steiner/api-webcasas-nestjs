@@ -63,19 +63,18 @@ export class PropertiesController {
     return this.propertiesService.delete(propertyId, req.user.id);
   }
 
+  @Get()
+  async getAll() {
+    return await this.propertiesService.getAll();
+  }
+
+  @Get('/inHight')
+  async getAllInHight() {
+    return this.propertiesService.getAllInHight();
+  }
+
   @Get('/:propertyId')
   async getById(@Param('propertyId') propertyId: string) {
     return this.propertiesService.getById(propertyId);
-  }
-
-  @Get()
-  async getAll() {
-    // @Res() res: Response
-    // const p = await this.propertiesService.getAll();
-    // console.log(p);
-
-    // res.status(HttpStatus.OK).json(p);
-
-    return await this.propertiesService.getAll();
   }
 }
