@@ -12,6 +12,8 @@ import { CreateUserResDto } from './dto/create-user.res.dto';
 import { UpdateUserReqDto, UpdateUserResDto } from './dto/update-user-req.dto';
 import { UpdateUserPasswordReqDto } from './dto/update-user-password.dto';
 import { DeleteUserReqDto } from './dto/detele-user.req.dto';
+import { plainToInstance } from 'class-transformer';
+import { PropertyEntity } from 'src/entities/property.entity';
 
 const prisma = new PrismaClient();
 
@@ -126,5 +128,15 @@ export class UsersService {
     await prisma.user.delete({ where: { id: userId } });
 
     return {};
+  }
+
+  async getProperties(ownerId: string) {
+    const properties = await prisma.property.findMany({
+      where: { ownerId },
+      include: { PropertyPhotos: true },
+      orderBy: { createdAt: 'desc' },
+    });
+
+    return plainToInstance(PropertyEntity, properties);
   }
 }

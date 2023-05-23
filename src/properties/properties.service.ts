@@ -8,6 +8,8 @@ import {
 import { CreatePropertyDto } from './dto/create-property.dto';
 import { PropertyEntity } from 'src/entities/property.entity';
 
+import { plainToInstance } from 'class-transformer';
+
 const prisma = new PrismaClient();
 
 @Injectable()
@@ -112,6 +114,32 @@ export class PropertiesService {
       throw new NotFoundException('Property not found');
     }
 
-    return new PropertyEntity(property);
+    const viewsCounterUpdated = property.viewsCounter + 1;
+    await prisma.property.update({
+      where: { id: propertyId },
+      data: { viewsCounter: viewsCounterUpdated },
+    });
+
+    return plainToInstance(PropertyEntity, property);
+  }
+
+  async getAll() {
+    const properties = await prisma.property.findMany({
+      where: { isActive: true },
+      include: { PropertyPhotos: true },
+      orderBy: { createdAt: 'desc' },
+    });
+
+    return plainToInstance(PropertyEntity, properties);
+  }
+
+  async getAllInHight() {
+    const properties = await prisma.property.findMany({
+      where: { isActive: true },
+      include: { PropertyPhotos: true },
+      orderBy: { viewsCounter: 'desc' },
+    });
+
+    return plainToInstance(PropertyEntity, properties);
   }
 }

@@ -1,4 +1,3 @@
-import { Decimal } from '@prisma/client/runtime/binary';
 import { Exclude, Transform } from 'class-transformer';
 import { PropertyPhotos } from './propertyPhotos.entity';
 import { UserEntity } from './user.entity';
@@ -22,15 +21,8 @@ export class PropertyEntity {
   hasGymCondo: boolean;
   hasPartyHallCondo: boolean;
 
-  @Transform(({ value }) => value.d[0])
-  price: Decimal;
-
-  @Transform(({ value }) => {
-    if (value) {
-      return value.d[0];
-    }
-  })
-  priceCondo: Decimal;
+  price: string;
+  priceCondo: string;
 
   isCondoPriceIncluded: boolean;
   state: string;
@@ -54,9 +46,7 @@ export class PropertyEntity {
   @Transform(({ value }) =>
     value.map((photo) => {
       delete photo['propertyId'];
-      return {
-        ...photo,
-      };
+      return photo;
     }),
   )
   PropertyPhotos: PropertyPhotos[];
@@ -65,7 +55,7 @@ export class PropertyEntity {
   ownerId: string;
 
   @Transform(({ value }) => new UserEntity(value))
-  owner: UserEntity;
+  owner?: UserEntity;
 
   constructor(partial: Partial<PropertyEntity>) {
     Object.assign(this, partial);

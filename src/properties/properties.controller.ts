@@ -5,21 +5,23 @@ import {
   Delete,
   Get,
   HttpCode,
+  HttpStatus,
   Param,
   Patch,
   Post,
   Req,
+  Res,
   UploadedFiles,
   UseInterceptors,
 } from '@nestjs/common';
-import { Request } from 'express';
+import { Request, Response } from 'express';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { CreatePropertyDto } from './dto/create-property.dto';
 import { PropertiesService } from './properties.service';
 import { multerOptions } from 'src/multer';
 
 @Controller('/properties')
-@UseInterceptors(ClassSerializerInterceptor)
+// @UseInterceptors(ClassSerializerInterceptor)
 export class PropertiesController {
   constructor(private readonly propertiesService: PropertiesService) {}
 
@@ -59,6 +61,16 @@ export class PropertiesController {
   @HttpCode(204)
   async delete(@Param('propertyId') propertyId: string, @Req() req: Request) {
     return this.propertiesService.delete(propertyId, req.user.id);
+  }
+
+  @Get()
+  async getAll() {
+    return await this.propertiesService.getAll();
+  }
+
+  @Get('/inHight')
+  async getAllInHight() {
+    return this.propertiesService.getAllInHight();
   }
 
   @Get('/:propertyId')
