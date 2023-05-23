@@ -101,4 +101,17 @@ export class PropertiesService {
 
     return {};
   }
+
+  async getById(propertyId: string) {
+    const property = await prisma.property.findFirst({
+      where: { id: propertyId, isActive: true },
+      include: { PropertyPhotos: true, owner: true },
+    });
+
+    if (!property) {
+      throw new NotFoundException('Property not found');
+    }
+
+    return new PropertyEntity(property);
+  }
 }

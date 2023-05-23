@@ -24,7 +24,7 @@ export class AppModule implements NestModule {
       .exclude(
         { path: 'users', method: RequestMethod.POST },
         { path: 'users/activate/:userId', method: RequestMethod.PATCH },
-        { path: 'properties', method: RequestMethod.GET },
+        { path: 'properties/:propertyId', method: RequestMethod.GET },
       )
       .forRoutes(
         { path: 'sessions', method: RequestMethod.GET },

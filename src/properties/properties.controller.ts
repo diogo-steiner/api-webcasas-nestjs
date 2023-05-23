@@ -3,6 +3,7 @@ import {
   ClassSerializerInterceptor,
   Controller,
   Delete,
+  Get,
   HttpCode,
   Param,
   Patch,
@@ -58,5 +59,10 @@ export class PropertiesController {
   @HttpCode(204)
   async delete(@Param('propertyId') propertyId: string, @Req() req: Request) {
     return this.propertiesService.delete(propertyId, req.user.id);
+  }
+
+  @Get('/:propertyId')
+  async getById(@Param('propertyId') propertyId: string) {
+    return this.propertiesService.getById(propertyId);
   }
 }
