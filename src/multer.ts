@@ -5,8 +5,6 @@ import { randomUUID } from 'crypto';
 import { UnsupportedMediaTypeException } from '@nestjs/common';
 import { cloudinaryStorage } from './cloudinary';
 
-const typeStorage = process.env.MULTER_TYPE_STORAGE;
-
 const diskStorages = multer.diskStorage({
   destination: path.join(__dirname, '../temp'),
   filename(_, file, callback) {
@@ -18,6 +16,8 @@ const diskStorages = multer.diskStorage({
     return callback(null, newName);
   },
 });
+
+const typeStorage = process.env.MULTER_TYPE_STORAGE;
 
 export const multerOptions: MulterOptions = {
   storage: typeStorage == 'production' ? cloudinaryStorage : diskStorages,
