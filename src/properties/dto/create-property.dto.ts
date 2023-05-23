@@ -82,11 +82,11 @@ export class CreatePropertyDto {
   @IsOptional()
   hasPartyHallCondo: boolean;
 
-  @IsString()
+  @IsNumberString()
   @Length(1, 12)
   price: string;
 
-  @IsString()
+  @IsNumberString()
   @Length(1, 12)
   @IsOptional()
   priceCondo: string;
