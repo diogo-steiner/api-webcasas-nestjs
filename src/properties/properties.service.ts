@@ -87,4 +87,18 @@ export class PropertiesService {
 
     return {};
   }
+
+  async delete(propertyId: string, ownerId: string) {
+    const property = await prisma.property.findFirst({
+      where: { id: propertyId, ownerId },
+    });
+
+    if (!property) {
+      throw new NotFoundException('Property not found ');
+    }
+
+    await prisma.property.delete({ where: { id: propertyId } });
+
+    return {};
+  }
 }
