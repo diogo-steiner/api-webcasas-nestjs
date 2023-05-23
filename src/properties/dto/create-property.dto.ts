@@ -82,11 +82,11 @@ export class CreatePropertyDto {
   @IsOptional()
   hasPartyHallCondo: boolean;
 
-  @IsNumberString({ locale: 'pt-BR' })
+  @IsString()
   @Length(1, 12)
   price: string;
 
-  @IsNumberString({ locale: 'pt-BR' })
+  @IsString()
   @Length(1, 12)
   @IsOptional()
   priceCondo: string;
